@@ -230,5 +230,5 @@ while True:
         r = pattern.search(r.text)
         if r != None:
             print('《'+mark[0]+'》选课成功！')
-    break
+            break
     time.sleep(2)
