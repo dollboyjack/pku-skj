@@ -43,7 +43,7 @@ def getyzm(yzmurl,headers,Referer):
             f.close()
     except:
         print('save failed')
-        return 'none'
+        return 'failed'
 
     image=Image.open(path)
     yzm=OCR(image,root,int(rand))
@@ -207,12 +207,12 @@ while True:
         while valid=='0':
             yzm=getyzm(yzmurl,headers,geturl)
             if yzm == 'failed':
-                time.sleep(0.4)
+                time.sleep(0.2)
                 continue
             data={'validCode': yzm}
             valid=postHTMLText(postyzmurl,headers,data,geturl)
             valid=valid.split('"')[3]
-            time.sleep(0.4)
+            time.sleep(0.2)
 
         href=href.split('&')
         index=href[0].split('=')[-1]
