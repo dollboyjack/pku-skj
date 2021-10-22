@@ -1,0 +1,1430 @@
+***********************1.0***********************
+
+import requests
+import time
+
+def postHTMLText(url,data):
+    try:
+        headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36',
+                 'Cookie':*****hided*****,
+                 'Host':'elective.pku.edu.cn',
+                 'Referer':r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/SupplyCancel.do'}
+        r=requests.post(url,headers=headers,data=data,timeout=10)
+        r.raise_for_status()
+        return r.text
+    except:
+        return ' error  '
+
+# 教育社会学
+data0={'index':'2',
+       'seq':'BKC03130400AT0006164'}
+
+url=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/refreshLimit.do'
+total=[50]
+
+while True:
+    r0=postHTMLText(url,data0)
+    try:
+        if int(r0[-5:-3])!=total[0]:
+            print('\a')
+            print('教育社会学思考')
+            break
+        total[0]=int(r0[-5:-3])
+        print(r0[1:-2])
+    except:
+        print(r0)
+    time.sleep(3)
+
+
+***********************1.1***********************
+
+import requests
+import time
+from bs4 import BeautifulSoup
+# 验证码识别下个版本再做吧
+import tesserocr
+from PIL import Image
+
+def getHTMLText(url,Cookie):
+    try:
+        headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36',
+                 'Cookie':Cookie,
+                 'Host':'elective.pku.edu.cn',
+                 'Referer':r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/help/HelpController.jpf'}
+        r=requests.post(url,headers=headers,timeout=10)
+        r.raise_for_status()
+        return r.text
+    except:
+        return 'error'
+
+geturl=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/SupplyCancel.do'
+Cookie=r'****hided*****'
+# 输入你想选的课程
+wants=['太极拳']
+
+while True:
+    html=getHTMLText(geturl,Cookie)
+    soup=BeautifulSoup(html,'lxml')
+    courses=soup.select('a[href^="/elective2008/edu/pku/stu/elective/controller/supplement/electSupplement.do"]')
+    for c in courses:
+        lst=c.attrs['onclick'].replace(',','').split("'")
+        cname=lst[3]
+        judge=lst[-3]
+        mark=[cname,judge]
+        if mark[0] in wants and mark[1]=='false':
+            break
+        print(mark)
+    if mark[1]=='false':
+        print('\a','您想选的《'+mark[0]+'》有名额了！')
+        break
+    time.sleep(2)
+
+
+
+***********************2.0***********************
+
+import requests
+import time
+from bs4 import BeautifulSoup
+import os
+import tesserocr
+from PIL import Image
+import random
+
+def getHTMLText(url,Cookie,Referer):
+    try:
+        headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36',
+                 'Cookie':Cookie,
+                 'Host':'elective.pku.edu.cn'}
+        headers['Referer']=Referer
+        r=requests.post(url,headers=headers,timeout=10)
+        r.raise_for_status()
+        return r.text
+    except:
+        return 'error'
+
+def getpic(picurl,Referer):
+    picurl=picurl+str(random.random()*10000)
+    html=getHTMLText(geturl,Cookie,Referer)
+
+picurl=r'http://elective.pku.edu.cn/elective2008/DrawServlet?Rand='
+picReferer=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/SupplyCancel.do'
+geturl=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/SupplyCancel.do'
+getReferer=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/help/HelpController.jpf'
+Cookie=r'UM_distinctid=16a8bc336585a3-0242e97fa94f3a-7a1437-e1000-16a8bc33659409; JSESSIONID=1gp5d11SF581nvj7RnHXhTtygKkzHLkvShM1HBHwwkdMNpnKQMmF!1007254802'
+# 输入你想选的课程
+wants=['流体力学']
+
+while True:
+    html=getHTMLText(geturl,Cookie,getReferer)
+    soup=BeautifulSoup(html,'lxml')
+    courses=soup.select('a[href^="/elective2008/edu/pku/stu/elective/controller/supplement/electSupplement.do"]')
+    for c in courses:
+        lst=c.attrs['onclick'].replace(',','').split("'")
+        cname=lst[3]
+        judge=lst[-3]
+        mark=[cname,judge]
+        if mark[0] in wants and mark[1]=='false':
+            break
+        print(mark)
+    if mark[1]=='false':
+        print('\a','您想选的《'+mark[0]+'》有名额了！')
+        break
+    time.sleep(2)
+	
+
+
+***********************3.0***********************
+
+import requests
+import time
+from bs4 import BeautifulSoup
+import os
+from PIL import Image
+import random
+from collections import defaultdict
+import numpy as np
+import tesserocr
+
+# 抓取网页get方法
+def getHTMLText(url,headers,data):
+    try:
+        r=requests.get(url,headers=headers,data=data,timeout=10)
+        r.raise_for_status()
+        return r
+    except:
+        return 'error'
+
+# 抓取网页post方法
+def postHTMLText(url,headers,data,Referer):
+    headers['Referer']=Referer
+    try:
+        r=requests.post(url,headers=headers,data=data,timeout=10)
+        r.raise_for_status()
+        return r.text
+    except:
+        return 'error'
+
+# 去掉二值化处理后的图片中的噪声点
+def cut_noise(image):
+
+    cols, rows = image.size # 图片的宽度和高度
+    change_pos = [] # 记录噪声点位置
+
+    a = np.asarray(image).astype('float')
+
+    # 遍历图片中的每个点，除掉边缘
+    for i in range(1, rows-1):
+        for j in range(1, cols-1):
+            # pixel_set用来记录该点附近的黑色像素的数量
+            pixel_set = 0
+            # 取该点的邻域为以该点为中心的九宫格
+            for m in range(i-1, i+2):
+                for n in range(j-1, j+2):
+                    if a[m, n] == 0: # 1为白色,0位黑色
+                        pixel_set = pixel_set+1
+
+            # 如果该位置的九宫内的黑色数量小于等于4，则判断为噪声,对相应位置进行像素修改，将噪声处的像素置为1（白色）
+            if pixel_set <= 3 and a[i][j] != 1:
+                a[i][j] = 1
+    a=a*255
+
+    image = Image.fromarray(a.astype('uint8'))  #重构图像
+
+    return image
+
+# 识别图片中的数字加字母
+def OCR(image,root):
+    image = image.convert('L')  # 转化为灰度图
+
+    # 二值化
+    threshold=200
+    table=[]
+    for i in range(256):
+        if i < threshold:
+            table.append(0)
+        else:
+            table.append(1)
+    image=image.point(table,'1')
+
+    # 去掉图片中的噪声（孤立点）
+    out = cut_noise(image)
+
+    # 识别图片中的数字和字母
+    text = tesserocr.image_to_text(out)
+
+    # 去掉识别结果中的特殊字符
+    exclude_char_list = ' .:\\|\'\"?![],()~@#$%^&*_+-={};<>/¥'
+    text = ''.join([x for x in text if x not in exclude_char_list])
+
+    return text
+
+# 爬取验证码图片并解析
+def getyzm(yzmurl,headers,Referer):
+    headers['Referer']=Referer
+    rand=random.random()*10000
+    yzmurl=yzmurl+str(rand)
+    
+    root="C://Users//admin//Desktop//"
+    path=root+str(rand)+'.jpg'
+    try:
+        if not os.path.exists(path):
+            pic=getHTMLText(yzmurl,headers,data={})
+            with open(path,'wb') as f:
+                f.write(pic.content)
+                f.close()
+    except:
+        print('save failed')
+        return 'none'
+
+    image=Image.open(path)
+    yzm=OCR(image,root)
+
+    return yzm
+    
+
+yzmurl=r'http://elective.pku.edu.cn/elective2008/DrawServlet?Rand='
+geturl=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/SupplyCancel.do'
+postyzmurl=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/validate.do'
+elecurl=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/electSupplement.do'
+Cookie=r'UM_distinctid=16a8bc336585a3-0242e97fa94f3a-7a1437-e1000-16a8bc33659409; JSESSIONID=bwXwdCpLGfhzMqTn5v1ZKnhgFcdFxWLYnyD1T2vZQgXBm9qnRfJ5!1737258724'
+headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36',
+                 'Cookie':Cookie,
+                 'Host':'elective.pku.edu.cn',
+                 'Referer':r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/help/HelpController.jpf'}
+
+# 输入你想选的课程
+wants=['流体力学']
+
+while True:
+    html=getHTMLText(geturl,headers,data={}).text
+    soup=BeautifulSoup(html,'lxml')
+    courses=soup.select('a[href^="/elective2008/edu/pku/stu/elective/controller/supplement/electSupplement.do"]')
+    for c in courses:
+        lst=c.attrs['onclick'].replace(',','').split("'")
+        href=c.attrs['href']
+        cname=lst[3]
+        judge=lst[-3]
+        mark=[cname,judge]
+        if mark[0] in wants and mark[1]=='false':
+            break
+        if mark[0] in wants:
+            print(mark)
+    if mark[1]=='false':
+        print('\a','您想选的《'+mark[0]+'》有名额了！')
+        valid='0'
+        while valid=='0':
+            getyzm(yzmurl,headers,geturl)
+            data={'validCode': 'fecc'}
+            valid=postHTMLText(postyzmurl,headers,data,geturl)
+            valid=valid.split('"')[3]
+
+        href=href.split('&')
+        index=href[0].split('=')[-1]
+        seq=href[1].split('=')[1]
+        eid=href[2].split('=')[1]
+        rn=href[3].split('=')[1]
+        data={'index': index,
+              'seq': seq,
+              'eid': eid,
+              'rn': rn}
+        headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36',
+                 'Cookie':Cookie,
+                 'Host':'elective.pku.edu.cn',
+                 'Referer':geturl}
+        getHTMLText(elecurl,headers,data)
+    break
+    time.sleep(2)
+	
+
+
+***********************4.0***********************
+
+from collections import defaultdict
+from bs4 import BeautifulSoup
+from urllib import parse
+from aip import AipOcr
+from PIL import Image
+import numpy as np
+import requests
+import random
+import base64
+import time
+
+# 抓取网页get方法
+def getHTMLText(url,headers,data):
+    try:
+        r=requests.get(url,headers=headers,data=data,timeout=10)
+        r.raise_for_status()
+        return r
+    except:
+        return 'error'
+
+# 抓取网页post方法
+def postHTMLText(url,headers,data,Referer):
+    headers['Referer']=Referer
+    try:
+        r=requests.post(url,headers=headers,data=data,timeout=10)
+        r.raise_for_status()
+        return r.text
+    except:
+        return 'error'
+
+# 去掉二值化处理后的图片中的噪声点
+def cut_noise(image):
+
+    cols, rows = image.size # 图片的宽度和高度
+    change_pos = [] # 记录噪声点位置
+
+    a = np.asarray(image).astype('float')
+
+    # 遍历图片中的每个点，除掉边缘
+    for i in range(1, rows-1):
+        for j in range(1, cols-1):
+            # pixel_set用来记录该点附近的黑色像素的数量
+            pixel_set = 0
+            # 取该点的邻域为以该点为中心的九宫格
+            for m in range(i-1, i+2):
+                for n in range(j-1, j+2):
+                    if a[m, n] == 0: # 1为白色,0位黑色
+                        pixel_set = pixel_set+1
+
+            # 如果该位置的九宫内的黑色数量小于等于4，则判断为噪声,对相应位置进行像素修改，将噪声处的像素置为1（白色）
+            if pixel_set <= 3 and a[i][j] != 1:
+                a[i][j] = 1
+    a=a*255
+
+    image = Image.fromarray(a.astype('uint8'))  #重构图像
+
+    return image
+
+# 识别图片中的数字加字母
+def OCR(image,root,n):
+    npath=root+'new'+str(n)+'.jpg'
+    image = image.convert('L')  # 转化为灰度图
+
+    # 二值化
+    threshold=200
+    table=[]
+    for i in range(256):
+        if i < threshold:
+            table.append(0)
+        else:
+            table.append(1)
+    image=image.point(table,'1')
+
+    # 去掉图片中的噪声（孤立点）
+    out = cut_noise(image)
+
+    out.save(npath)
+    with open(npath, 'rb') as fp:
+        image=fp.read()
+
+    # 识别图片中的数字和字母
+    options = {"detect_language":"true"}
+    r=client.webImage(image, options)
+
+    # 去掉识别结果中的特殊字符
+    if r.get('error_msg') == None and r['words_result_num'] == 1:
+        text=r['words_result'][0]['words']
+        exclude_char_list = ' .:\\|\'\"?![],()~@#$%^&*_+-={};<>/¥'
+        text = ''.join([x for x in text if x not in exclude_char_list])
+        if len(text) > 4:
+            text=text[0:4]
+        return text
+    else:
+        return 'failed'
+
+# 爬取验证码图片并解析
+def getyzm(yzmurl,headers,Referer):
+    headers['Referer']=Referer
+    rand=random.random()*10000
+    yzmurl=yzmurl+str(rand)
+    
+    root="C://Users//admin//Desktop//"
+    path=root+str(rand)+'.jpg'
+    try:
+        pic=getHTMLText(yzmurl,headers,data={})
+        with open(path,'wb') as f:
+            f.write(pic.content)
+            f.close()
+    except:
+        print('save failed')
+        return 'none'
+
+    image=Image.open(path)
+    yzm=OCR(image,root,int(rand))
+
+    return yzm
+    
+APP_ID = '********'
+API_KEY = '********'
+SECRET_KEY = '********'
+client = AipOcr(APP_ID, API_KEY, SECRET_KEY)
+
+yzmurl=r'http://elective.pku.edu.cn/elective2008/DrawServlet?Rand='
+geturl=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/SupplyCancel.do'
+postyzmurl=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/validate.do'
+elecurl=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/electSupplement.do'
+Cookie=r'UM_distinctid=16a8bc336585a3-0242e97fa94f3a-7a1437-e1000-16a8bc33659409; JSESSIONID=vHl9dDMYlYm4PKrG9tt1rsWRnLvKqDNkhzwttf8LTNf0snJRd8WT!1737258724'
+headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36',
+                 'Cookie':Cookie,
+                 'Host':'elective.pku.edu.cn',
+                 'Referer':r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/help/HelpController.jpf'}
+
+# 输入你想选的课程
+wants=['流体力学']
+
+while True:
+    html=getHTMLText(geturl,headers,data={}).text
+    soup=BeautifulSoup(html,'lxml')
+    courses=soup.select('a[href^="/elective2008/edu/pku/stu/elective/controller/supplement/electSupplement.do"]')
+    mark=[]
+    for c in courses:
+        lst=c.attrs['onclick'].replace(',','').split("'")
+        href=c.attrs['href']
+        cname=lst[3]
+        judge=lst[-3]
+        mark=[cname,judge]
+        if mark[0] in wants and mark[1]=='false':
+            break
+        if mark[0] in wants:
+            print(mark)
+
+    if mark[1]=='false':
+        print('\a','您想选的《'+mark[0]+'》有名额了！')
+        valid='0'
+        while valid=='0':
+            yzm=getyzm(yzmurl,headers,geturl)
+            if yzm == 'failed':
+                time.sleep(0.4)
+                continue
+            data={'validCode': yzm}
+            valid=postHTMLText(postyzmurl,headers,data,geturl)
+            valid=valid.split('"')[3]
+            time.sleep(0.4)
+
+        href=href.split('&')
+        index=href[0].split('=')[-1]
+        seq=href[1].split('=')[1]
+        eid=href[2].split('=')[1]
+        rn=href[3].split('=')[1]
+        data={'index': index,
+              'seq': seq,
+              'eid': parse.unquote(eid),
+              'rn': rn}
+        headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.86 Safari/537.36',
+                 'Cookie':Cookie,
+                 'Host':'elective.pku.edu.cn',
+                 'Referer':geturl}
+        q=getHTMLText(elecurl,headers,data)
+    break
+    time.sleep(2)
+	
+
+
+***********************5.0***********************
+
+from collections import defaultdict
+from bs4 import BeautifulSoup
+from urllib import parse
+from aip import AipOcr
+from PIL import Image
+import numpy as np
+import requests
+import random
+import base64
+import time
+import re
+
+# 抓取网页get方法
+def getHTMLText(url,headers,data):
+    try:
+        r=session.get(url,headers=headers,params=data,timeout=10)
+        r.raise_for_status()
+        return r
+    except:
+        return 'error'
+
+# 抓取网页post方法
+def postHTMLText(url,headers,data,Referer):
+    headers['Referer']=Referer
+    try:
+        r=session.post(url,headers=headers,data=data,timeout=10)
+        r.raise_for_status()
+        return r.text
+    except:
+        return 'error'
+
+# 去掉二值化处理后的图片中的噪声点
+def cut_noise(image):
+
+    cols, rows = image.size # 图片的宽度和高度
+    change_pos = [] # 记录噪声点位置
+
+    a = np.asarray(image).astype('float')
+
+    # 遍历图片中的每个点，除掉边缘
+    for i in range(1, rows-1):
+        for j in range(1, cols-1):
+            # pixel_set用来记录该点附近的黑色像素的数量
+            pixel_set = 0
+            # 取该点的邻域为以该点为中心的九宫格
+            for m in range(i-1, i+2):
+                for n in range(j-1, j+2):
+                    if a[m, n] == 0: # 1为白色,0位黑色
+                        pixel_set = pixel_set+1
+
+            # 如果该位置的九宫内的黑色数量小于等于4，则判断为噪声,对相应位置进行像素修改，将噪声处的像素置为1（白色）
+            if pixel_set <= 3 and a[i][j] != 1:
+                a[i][j] = 1
+    a=a*255
+
+    image = Image.fromarray(a.astype('uint8'))  #重构图像
+
+    return image
+
+# 识别图片中的数字加字母
+def OCR(image,root,n):
+    npath=root+'new'+str(n)+'.jpg'
+    image = image.convert('L')  # 转化为灰度图
+
+    # 二值化
+    threshold=200
+    table=[]
+    for i in range(256):
+        if i < threshold:
+            table.append(0)
+        else:
+            table.append(1)
+    image=image.point(table,'1')
+
+    # 去掉图片中的噪声（孤立点）
+    out = cut_noise(image)
+
+    out.save(npath)
+    with open(npath, 'rb') as fp:
+        image=fp.read()
+
+    # 识别图片中的数字和字母
+    options = {"detect_language":"true"}
+    r=client.webImage(image, options)
+
+    # 去掉识别结果中的特殊字符
+    if r.get('error_msg') == None and r['words_result_num'] == 1:
+        text=r['words_result'][0]['words']
+        exclude_char_list = ' .:\\|\'\"?![],()~@#$%^&*_+-={};<>/¥'
+        text = ''.join([x for x in text if x not in exclude_char_list])
+        if len(text) > 4:
+            text=text[0:4]
+        return text
+    else:
+        return 'failed'
+
+# 爬取验证码图片并解析
+def getyzm(yzmurl,headers,Referer):
+    headers['Referer']=Referer
+    rand=random.random()*10000
+    yzmurl=yzmurl+str(rand)
+    
+    root="C://Users//admin//Desktop//"
+    path=root+str(rand)+'.jpg'
+    try:
+        pic=getHTMLText(yzmurl,headers,data={})
+        with open(path,'wb') as f:
+            f.write(pic.content)
+            f.close()
+    except:
+        print('save failed')
+        return 'none'
+
+    image=Image.open(path)
+    yzm=OCR(image,root,int(rand))
+
+    return yzm
+    
+APP_ID = '********'
+API_KEY = '********'
+SECRET_KEY = '********'
+client = AipOcr(APP_ID, API_KEY, SECRET_KEY)
+
+yzmurl=r'http://elective.pku.edu.cn/elective2008/DrawServlet?Rand='
+geturl=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/SupplyCancel.do'
+postyzmurl=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/validate.do'
+elecurl=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/electSupplement.do'
+headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18362',
+                 'Host':'elective.pku.edu.cn',
+                 'Referer':r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/help/HelpController.jpf'}
+
+# 模拟登录
+session = requests.Session()
+
+login_url1 = r'https://iaaa.pku.edu.cn/iaaa/isMobileAuthen.do'
+login_headers = {'Host': r'iaaa.pku.edu.cn',
+                 'Referer': r'https://iaaa.pku.edu.cn/iaaa/oauth.jsp?appID=syllabus&appName=%E5%AD%A6%E7%94%9F%E9%80%89%E8%AF%BE%E7%B3%BB%E7%BB%9F&redirectUrl=http://elective.pku.edu.cn:80/elective2008/ssoLogin.do',
+                 'User-Agent': r'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18362'}
+rand=random.random()
+login_data1 = {'appId': 'syllabus',
+              'userName': '1700012403',
+              '_rand': str(rand)}
+response = session.get(login_url1, params=login_data1, headers=login_headers)
+
+login_url2 = r'https://iaaa.pku.edu.cn/iaaa/oauthlogin.do'
+login_data2 = {'appid': 'syllabus',
+              'userName': '1700012403',
+              'password': 'gaoleng45',
+              'randCode': '',
+              'smsCode': '',
+              'otpCode': '',
+              'redirUrl': r'http://elective.pku.edu.cn:80/elective2008/ssoLogin.do'}
+login_headers['Origin'] = r'https://iaaa.pku.edu.cn'
+response = session.post(login_url2, data=login_data2, headers=login_headers)
+token = response.text.split('"')[-2]
+response = session.get(login_url2)
+
+login_url3 = r'http://elective.pku.edu.cn/elective2008/ssoLogin.do'
+rand=random.random()
+login_data3 = {'rand': str(rand),
+               'token': token}
+login_headers.pop('Origin')
+login_headers.pop('Referer')
+login_headers['Host']=r'elective.pku.edu.cn'
+response = session.get(login_url3, params=login_data3, headers=login_headers)
+referer = response.url
+pattern = re.compile(r'sida=[0-9a-z]+')
+sida=pattern.search(response.text).group().split('=')[-1]
+
+login_data4 = {'sida': sida,
+              'sttp': 'bzx'}
+login_headers['Referer']=referer
+response = session.get(login_url3, params=login_data4, headers=login_headers)
+
+
+# 输入你想选的课程
+wants=['流体力学']
+
+while True:
+    html=getHTMLText(geturl,headers,data={}).text
+    soup=BeautifulSoup(html,'lxml')
+    courses=soup.select('a[href^="/elective2008/edu/pku/stu/elective/controller/supplement/electSupplement.do"]')
+    mark=[]
+    for c in courses:
+        lst=c.attrs['onclick'].replace(',','').split("'")
+        href=c.attrs['href']
+        cname=lst[3]
+        judge=lst[-3]
+        mark=[cname,judge]
+        if mark[0] in wants and mark[1]=='false':
+            break
+        if mark[0] in wants:
+            print(mark)
+
+    if mark[1]=='false':
+        print('\a','您想选的《'+mark[0]+'》有名额了！')
+        valid='0'
+        while valid=='0':
+            yzm=getyzm(yzmurl,headers,geturl)
+            if yzm == 'failed':
+                time.sleep(0.4)
+                continue
+            data={'validCode': yzm}
+            valid=postHTMLText(postyzmurl,headers,data,geturl)
+            valid=valid.split('"')[3]
+            time.sleep(0.4)
+
+        href=href.split('&')
+        index=href[0].split('=')[-1]
+        seq=href[1].split('=')[1]
+        eid=href[2].split('=')[1]
+        rn=href[3].split('=')[1]
+        data={'index': index,
+              'seq': seq,
+              'eid': parse.unquote(eid),
+              'rn': rn}
+        headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18362',
+                 'Host':'elective.pku.edu.cn',
+                 'Referer':geturl,
+                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
+                 'Connection': 'keep-alive',
+                 'Upgrade-Insecure-Requests': '1'}
+        getHTMLText(elecurl,headers,data)
+    break
+    time.sleep(2)
+
+
+
+***********************6.0***********************
+
+开发手记：
+1.双学位目前只能选预选列表第一页的，不能自动翻页，来日加上去。
+2.代码是用修双的我的选课页面写的，只有主修的同学的界面可能稍有不同，还要改动。
+3.百度api在代码里面，如果分享给别人记得隐藏！！！！！！
+4.虽然有以上3点缺陷，但这些都是小问题，最难的网页分析和验证码识别我都搞定了，
+	所以这些东西明年再写吧，反正我在补退选第二天就已经把课选好了！
+
+*************************************************
+from bs4 import BeautifulSoup
+from urllib import parse
+from aip import AipOcr
+from PIL import Image
+import numpy as np
+import requests
+import random
+import time
+import re
+import os
+
+# 抓取网页get
+def getHTMLText(url,headers,data):
+    try:
+        r=session.get(url,headers=headers,params=data,timeout=10)
+        r.raise_for_status()
+        return r
+    except:
+        return 'error'
+
+# 抓取网页post方法
+def postHTMLText(url,headers,data,Referer):
+    headers['Referer']=Referer
+    try:
+        r=session.post(url,headers=headers,data=data,timeout=10)
+        r.raise_for_status()
+        return r.text
+    except:
+        return 'error'
+
+# 爬取验证码图片并返回结果
+def getyzm(yzmurl,headers,Referer):
+    headers['Referer']=Referer
+    rand=random.random()*10000
+    yzmurl=yzmurl+str(rand)
+    
+    root="C://Users//admin//Desktop//"
+    path=root+str(rand)+'.jpg'
+    try:
+        pic=getHTMLText(yzmurl,headers,data={})
+        with open(path,'wb') as f:
+            f.write(pic.content)
+            f.close()
+    except:
+        print('save failed')
+        return 'failed'
+
+    image=Image.open(path)
+    yzm=OCR(image,root,int(rand))
+    if os.path.exists(path):
+            os.remove(path)
+    return yzm
+
+# 识别图片中的数字加字母
+def OCR(image,root,n):
+    npath=root+'new'+str(n)+'.jpg'
+    image = image.convert('L')
+
+    # 二值化
+    threshold=200
+    table=[]
+    for i in range(256):
+        if i < threshold:
+            table.append(0)
+        else:
+            table.append(1)
+    image=image.point(table,'1')
+
+    # 去掉图片中的噪声
+    out = cut_noise(image)
+    out.save(npath)
+    with open(npath, 'rb') as f:
+        image=f.read()
+        f.close()
+
+    # 调用百度api，识别图片中的数字和字母
+    APP_ID = '********'
+	API_KEY = '********'
+	SECRET_KEY = '********'
+    client = AipOcr(APP_ID, API_KEY, SECRET_KEY)
+    options = {"detect_language":"true"}
+    r=client.webImage(image, options)
+
+    # 去掉识别结果中的特殊字符，同时限定长度为4
+    if r.get('error_msg') == None and r['words_result_num'] == 1:
+        text=r['words_result'][0]['words']
+        exclude_char_list = ' .:\\|\'\"?![],()~@#$%^&*_+-={};<>/¥'
+        text = ''.join([x for x in text if x not in exclude_char_list])
+        if len(text) > 4:
+            text=text[0:4]
+
+        if os.path.exists(npath):
+            os.remove(npath)
+        return text
+    else:
+        if os.path.exists(npath):
+            os.remove(npath)
+        return 'failed'
+
+# 去掉二值化处理后的图片中的噪声
+def cut_noise(image):
+    cols, rows = image.size # 图片的宽度和高度
+    a = np.asarray(image).astype('float')
+
+    # 遍历图片中的每个点去除噪声
+    for i in range(1, rows-1):
+        for j in range(1, cols-1):
+            pixel_set = 0
+            for m in range(i-1, i+2):
+                for n in range(j-1, j+2):
+                    if a[m, n] == 0: # 1为白色,0位黑色
+                        pixel_set = pixel_set+1
+            if pixel_set < 4 and a[i][j] != 1:
+                a[i][j] = 1
+    a=a*255
+    image = Image.fromarray(a.astype('uint8'))
+    return image
+
+#模拟登录
+def login(session, whedmajor, id, password):
+    login_url = r'https://iaaa.pku.edu.cn/iaaa/oauthlogin.do'
+    login_data = {'appid': 'syllabus',
+                  'userName': id,
+                  'password': password,
+                  'randCode': '',
+                  'smsCode': '',
+                  'otpCode': '',
+                  'redirUrl': r'http://elective.pku.edu.cn:80/elective2008/ssoLogin.do'}
+    login_headers = {'Host': r'iaaa.pku.edu.cn',
+                     'Referer': r'https://iaaa.pku.edu.cn/iaaa/oauth.jsp?appID=syllabus&appName=%E5%AD%A6%E7%94%9F%E9%80%89%E8%AF%BE%E7%B3%BB%E7%BB%9F&redirectUrl=http://elective.pku.edu.cn:80/elective2008/ssoLogin.do',
+                     'User-Agent': r'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18362',
+                     'Origin' : r'https://iaaa.pku.edu.cn'}
+    response = session.post(login_url, data=login_data, headers=login_headers)
+    token = response.text.split('"')[-2]
+    response = session.get(login_url)
+    
+    login_url = r'http://elective.pku.edu.cn/elective2008/ssoLogin.do'
+    rand=random.random()
+    login_data = {'rand': str(rand),
+                  'token': token}
+    login_headers.pop('Origin')
+    login_headers.pop('Referer')
+    login_headers['Host']=r'elective.pku.edu.cn'
+    response = session.get(login_url, params=login_data, headers=login_headers)
+    referer = response.url
+    pattern = re.compile(r'sida=[0-9a-z]+')
+    sida=pattern.search(response.text).group().split('=')[-1]
+    
+    login_data = {'sida': sida,
+                   'sttp': whedmajor}
+    login_headers['Referer']=referer
+    response = session.get(login_url, params=login_data, headers=login_headers)
+
+
+print('欢迎使用 PC刷课机6.0 ！使用此刷课机代表您已知晓使用不当可能带来的一切后果！并愿意承担全部责任！')
+id = input('please enter your id: ')
+password = input('please enter your password: ')
+wants = []
+print('请依此输入你想选的课程并按回车键，输入‘PC’结束输入')
+while True:
+    c = input()
+    if c != 'PC':
+        wants.append(c)
+    else:
+        break
+
+while True:
+    judge = input('主修刷课请输入‘1’，双学位刷课请输入‘2’:')
+    if judge == '1':
+       whedmajor='bzx'
+       break
+    elif judge == '2':
+       whedmajor='bfx'
+       break
+
+yzmurl=r'http://elective.pku.edu.cn/elective2008/DrawServlet?Rand='
+geturl=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/SupplyCancel.do'
+postyzmurl=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/validate.do'
+elecurl=r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/supplement/electSupplement.do'
+headers={'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.18362',
+         'Host':'elective.pku.edu.cn',
+         'Referer':r'http://elective.pku.edu.cn/elective2008/edu/pku/stu/elective/controller/help/HelpController.jpf'}
+
+# 登录
+session = requests.Session()
+login(session, whedmajor, id, password)
+
+while True:
+    html=getHTMLText(geturl,headers,data={}).text
+    soup=BeautifulSoup(html,'lxml')
+    courses=soup.select('a[href^="/elective2008/edu/pku/stu/elective/controller/supplement/electSupplement.do"]')
+    mark=[]
+    for c in courses:
+        lst=c.attrs['onclick'].replace(',','').split("'")
+        href=c.attrs['href']
+        cname=lst[3]
+        judge=lst[-3]
+        mark=[cname,judge]
+        if mark[0] in wants and mark[1]=='false':
+            break
+        if mark[0] in wants:
+            print(mark)
+
+    if mark[1]=='false':
+        print('\a','您想选的《'+mark[0]+'》有名额了！')
+        valid='0'
+        while valid=='0':
+            yzm=getyzm(yzmurl,headers,geturl)
+            if yzm == 'failed':
+                time.sleep(0.2)
+                continue
+            data={'validCode': yzm}
+            valid=postHTMLText(postyzmurl,headers,data,geturl)
+            valid=valid.split('"')[3]
+            time.sleep(0.2)
+
+        href=href.split('&')
+        index=href[0].split('=')[-1]
+        seq=href[1].split('=')[1]
+        eid=href[2].split('=')[1]
+        rn=href[3].split('=')[1]
+        data={'index': index,
+              'seq': seq,
+              'eid': parse.unquote(eid),
+              'rn': rn}
+        headers['Referer'] = geturl
+        r = getHTMLText(elecurl,headers,data)
+
+        pattern = re.compile(mark[0])
+        r = pattern.search(r.text)
+        if r != None:
+            print('《'+mark[0]+'》选课成功！')
+            wants.remove(mark[0])
+        if len(wants)==0:
+            break
+    time.sleep(2)
+	
+
+
+***********************8.0***********************
+
+开发手记：
+1.双学位目前只能选预选列表第一页的，不能自动翻页，来日加上去。
+2.代码是用修双的我的选课页面写的，只有主修的同学的界面可能稍有不同，还要改动。
+3.百度api在代码里面，如果分享给别人记得隐藏！！！！！！
+4.7.0忘记保存了
+
+*************************************************
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium import webdriver
+from bs4 import BeautifulSoup
+from aip import AipOcr
+from PIL import Image
+import numpy as np
+import time
+import os
+
+class web():
+    def __init__(self,userid,userpassword,userwants,userjudge):
+        self.userid=str(userid)
+        self.userpassword=str(userpassword)
+        self.wants=userwants
+        self.userjudge=str(userjudge)
+        self.rand=0
+
+        self.browser=webdriver.Chrome()
+        self.browser.get('http://elective.pku.edu.cn')
+        self.wait=WebDriverWait(self.browser,10)
+
+    def login(self):
+        id=self.wait.until(EC.presence_of_element_located((By.ID,'user_name')))
+        password=self.wait.until(EC.presence_of_element_located((By.ID,'password')))
+        enter1=self.wait.until(EC.element_to_be_clickable((By.ID,'logon_button')))
+
+        id.clear()
+        id.send_keys(self.userid)
+        password.clear()
+        password.send_keys(self.userpassword)
+        enter1.click()
+
+        # 主修
+        if self.userjudge=='1':
+            major=self.wait.until(EC.element_to_be_clickable((By.ID,'div1')))
+            major.click()
+        # 双学位
+        elif self.userjudge=='2':
+            major=self.wait.until(EC.element_to_be_clickable((By.ID,'div2')))
+            major.click()
+
+        time.sleep(1.5)
+        enter2=self.browser.find_element_by_link_text('补选退选')
+        enter2.click()
+
+    def check(self):
+        while True:
+            # 检验前刷新页面
+            self.browser.refresh()
+            # 提取课程信息并判断
+            html=self.browser.page_source
+            soup=BeautifulSoup(html,'lxml')
+            courses=soup.select(
+                'a[href^="/elective2008/edu/pku/stu/elective/controller/supplement/electSupplement.do"]')
+            mark=[]
+            for c in courses:
+                lst=c.attrs['onclick'].replace(',','').split("'")
+                cname=lst[3]
+                judge=lst[-3]
+                mark=[cname,judge]
+                if mark[0] in self.wants and mark[1]=='false':
+                    break
+                if mark[0] in self.wants:
+                    print('《'+mark[0]+'》'+'还没有名额，请等待')
+
+            if mark[1]=='false':
+                print('\a','您想选的《'+mark[0]+'》有名额了！')
+                ans=self.elecourse(mark[0])
+                self.browser.quit()
+                break
+            else:
+                time.sleep(1)
+
+    def elecourse(self,cname):
+        # 识别验证码
+        yzm=self.getyzm()
+        cs=self.browser.find_elements_by_link_text('补选')
+        cnamepos=self.browser.find_element_by_link_text(cname).location['y']
+        for c in cs:
+            cpos=c.location['y']
+            # 通过位置识别想选的课程和对应的‘补选’按钮
+            if abs(cpos-cnamepos)<=30:
+                while True:
+                    yzminput=self.browser.find_element_by_id('validCode')
+                    yzminput.clear()
+                    yzminput.send_keys(yzm)
+                    c.click()
+                    time.sleep(0.4)
+                    al=self.browser.switch_to.alert
+                    if al.text=='验证码不正确，请重新填写。':
+                        al.accept()
+                        repic=self.browser.find_element_by_link_text('换一个')
+                        repic.click()
+                        yzm=self.getyzm()
+                        continue
+                    else:
+                        al.accept()
+                        print('《'+cname+'》选课成功！')
+                        return 0
+            
+    # 识别验证码
+    def getyzm(self):
+        pic=self.browser.find_element(By.ID,'imgname')
+    
+        self.rand=self.rand+1
+        root="C:/"
+        path=root+str(self.rand)+'.jpg'
+        with open(path,'wb') as f:
+            f.write(pic.screenshot_as_png)
+            f.close()
+
+        image=Image.open(path)
+        yzm=self.OCR(image,root,int(self.rand))
+        if os.path.exists(path):
+                os.remove(path)
+        return yzm
+
+    # 识别图片中的数字加字母
+    def OCR(self,image,root,n):
+        npath=root+'new'+str(n)+'.jpg'
+        image = image.convert('L')
+
+        # 二值化
+        threshold=200
+        table=[]
+        for i in range(256):
+            if i < threshold:
+                table.append(0)
+            else:
+                table.append(1)
+        image=image.point(table,'1')
+
+        # 去掉图片中的噪声
+        out=self.cut_noise(image)
+        out.save(npath)
+        with open(npath, 'rb') as f:
+            image=f.read()
+            f.close()
+
+        # 调用百度api，识别图片中的数字和字母
+        APP_ID = '********'
+		API_KEY = '********'
+		SECRET_KEY = '********'
+        client = AipOcr(APP_ID, API_KEY, SECRET_KEY)
+        options = {"detect_language":"true"}
+        r=client.webImage(image, options)
+
+        # 删除图片
+        if os.path.exists(npath):
+            os.remove(npath)
+
+        # 去掉识别结果中的特殊字符，同时限定长度为4
+        if r.get('error_msg') == None and r['words_result_num'] == 1:
+            text=r['words_result'][0]['words']
+            exclude_char_list = ' .:\\|\'\"?![],()~@#$%^&*_+-={};<>/¥'
+            text = ''.join([x for x in text if x not in exclude_char_list])
+            if len(text) > 4:
+                text=text[0:4]
+            elif len(text) < 4:
+                repic=self.browser.find_element_by_link_text('换一个')
+                repic.click()
+                return self.getyzm()
+            else:
+                return text
+        else:
+            if os.path.exists(npath):
+                os.remove(npath)
+            repic=self.browser.find_element_by_link_text('换一个')
+            repic.click()
+            return self.getyzm()
+
+    # 去掉二值化处理后的图片中的噪声
+    def cut_noise(self,image):
+        cols, rows = image.size # 图片的宽度和高度
+        a = np.asarray(image).astype('float')
+
+        # 遍历图片中的每个点去除噪声
+        for i in range(1, rows-1):
+            for j in range(1, cols-1):
+                pixel_set = 0
+                for m in range(i-1, i+2):
+                    for n in range(j-1, j+2):
+                        if a[m, n] == 0: # 1为白色,0位黑色
+                            pixel_set = pixel_set+1
+                if pixel_set < 4 and a[i][j] != 1:
+                    a[i][j] = 1
+        a=a*255
+        image = Image.fromarray(a.astype('uint8'))
+        return image
+
+
+
+print('欢迎使用 PC刷课机8.0 ！使用此刷课机代表您已知晓使用不当可能带来的一切后果！并愿意承担全部责任！')
+id=input('请输入您的学号: ')
+password=input('请输入您的密码: ')
+wants=[]
+c=input('请输入您想选的课程名（注意全半角和大小写）: ')
+wants.append(c)
+judge=input('主修刷课请输入‘1’，双学位刷课请输入‘2’:')
+
+ele=web(id,password,wants,judge)
+ele.login()
+ele.check()
+
+
+
+***********************9.0***********************
+
+开发手记：
+1.可移植性不好，下次改
+2.百度api在代码里面，如果分享给别人记得隐藏！！！！！！
+
+*************************************************
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium import webdriver
+from bs4 import BeautifulSoup
+from aip import AipOcr
+from PIL import Image
+import numpy as np
+import random
+import time
+import os
+
+class web():
+    def __init__(self,userid,userpassword,userwants,userjudge,page,gap):
+        self.userid=str(userid)
+        self.userpassword=str(userpassword)
+        self.wants=userwants
+        self.userjudge=str(userjudge)
+        self.rand=0
+        self.page=int(page)
+        self.gap=int(gap)
+
+        self.browser=webdriver.Chrome()
+        self.browser.get('http://elective.pku.edu.cn')
+        self.wait=WebDriverWait(self.browser,10)
+
+    def login(self):
+        id=self.wait.until(EC.presence_of_element_located((By.ID,'user_name')))
+        password=self.wait.until(EC.presence_of_element_located((By.ID,'password')))
+        enter1=self.wait.until(EC.element_to_be_clickable((By.ID,'logon_button')))
+
+        id.clear()
+        id.send_keys(self.userid)
+        password.clear()
+        password.send_keys(self.userpassword)
+        enter1.click()
+
+        # 主修
+        if self.userjudge=='1':
+            major=self.wait.until(EC.element_to_be_clickable((By.ID,'div1')))
+            major.click()
+        # 双学位
+        elif self.userjudge=='2':
+            major=self.wait.until(EC.element_to_be_clickable((By.ID,'div2')))
+            major.click()
+
+        time.sleep(1.5)
+        enter2=self.browser.find_element_by_link_text('补选退选')
+        enter2.click()
+
+    def check(self):
+        # 翻页
+        while self.page > 1:
+            nextpage=self.browser.find_element_by_link_text('Next')
+            nextpage.click()
+            self.page-=1
+
+        while True:
+            # 检验前刷新页面
+            self.browser.refresh()
+            # 提取课程信息并判断
+            html=self.browser.page_source
+            soup=BeautifulSoup(html,'lxml')
+            courses=soup.select(
+                'a[href^="/elective2008/edu/pku/stu/elective/controller/supplement/electSupplement.do"]')
+            mark=[]
+            for c in courses:
+                lst=c.attrs['onclick'].replace(',','').split("'")
+                cname=lst[3]
+                judge=lst[-3]
+                mark=[cname,judge]
+                if mark[0] in self.wants and mark[1]=='false':
+                    break
+                if mark[0] in self.wants:
+                    print('《'+mark[0]+'》'+'还没有名额，请等待')
+
+            if mark[0] in self.wants and mark[1]=='false':
+                print('\a','您想选的《'+mark[0]+'》有名额了！')
+                ans=self.elecourse(mark[0])
+                break
+            else:
+                time.sleep(self.gap+self.gap*0.5*random.random())
+
+    def elecourse(self,cname):
+        # 识别验证码
+        yzm=self.getyzm()
+        cs=self.browser.find_elements_by_link_text('补选')
+        cnamepos=self.browser.find_element_by_link_text(cname).location['y']
+        for c in cs:
+            cpos=c.location['y']
+            # 通过位置识别想选的课程和对应的‘补选’按钮
+            if abs(cpos-cnamepos)<=30:
+                while True:
+                    yzminput=self.browser.find_element_by_id('validCode')
+                    yzminput.clear()
+                    yzminput.send_keys(yzm)
+                    c.click()
+                    time.sleep(0.4)
+                    al=self.browser.switch_to.alert
+                    if al.text=='验证码不正确，请重新填写。':
+                        al.accept()
+                        repic=self.browser.find_element_by_link_text('换一个')
+                        repic.click()
+                        yzm=self.getyzm()
+                        continue
+                    else:
+                        al.accept()
+                        print('《'+cname+'》选课成功！')
+                        return 0
+            
+    # 识别验证码
+    def getyzm(self):
+        pic=self.browser.find_element(By.ID,'imgname')
+    
+        self.rand=self.rand+1
+        root="C:/"
+        path=root+str(self.rand)+'.jpg'
+        with open(path,'wb') as f:
+            f.write(pic.screenshot_as_png)
+            f.close()
+
+        image=Image.open(path)
+        yzm=self.OCR(image,root,int(self.rand))
+        if os.path.exists(path):
+                os.remove(path)
+        return yzm
+
+    # 识别图片中的数字加字母
+    def OCR(self,image,root,n):
+        npath=root+'new'+str(n)+'.jpg'
+        image = image.convert('L')
+
+        # 二值化
+        threshold=200
+        table=[]
+        for i in range(256):
+            if i < threshold:
+                table.append(0)
+            else:
+                table.append(1)
+        image=image.point(table,'1')
+
+        # 去掉图片中的噪声
+        out=self.cut_noise(image)
+        out.save(npath)
+        with open(npath, 'rb') as f:
+            image=f.read()
+            f.close()
+
+        # 调用百度api，识别图片中的数字和字母
+        APP_ID = '********'
+        API_KEY = '********'
+        SECRET_KEY = '********'
+        client = AipOcr(APP_ID, API_KEY, SECRET_KEY)
+        options = {"detect_language":"true"}
+        r=client.webImage(image, options)
+
+        # 删除图片
+        if os.path.exists(npath):
+            os.remove(npath)
+
+        # 去掉识别结果中的特殊字符，同时限定长度为4
+        if r.get('error_msg') == None and r['words_result_num'] == 1:
+            text=r['words_result'][0]['words']
+            exclude_char_list = ' .:\\|\'\"?![],()~@#$%^&*_+-={};<>/¥'
+            text = ''.join([x for x in text if x not in exclude_char_list])
+            if len(text) > 4:
+                text=text[0:4]
+            elif len(text) < 4:
+                repic=self.browser.find_element_by_link_text('换一个')
+                repic.click()
+                return self.getyzm()
+            else:
+                return text
+        else:
+            if os.path.exists(npath):
+                os.remove(npath)
+            repic=self.browser.find_element_by_link_text('换一个')
+            repic.click()
+            return self.getyzm()
+
+    # 去掉二值化处理后的图片中的噪声
+    def cut_noise(self,image):
+        cols, rows = image.size # 图片的宽度和高度
+        a = np.asarray(image).astype('float')
+
+        # 遍历图片中的每个点去除噪声
+        for i in range(1, rows-1):
+            for j in range(1, cols-1):
+                pixel_set = 0
+                for m in range(i-1, i+2):
+                    for n in range(j-1, j+2):
+                        if a[m, n] == 0: # 1为白色,0位黑色
+                            pixel_set = pixel_set+1
+                if pixel_set < 4 and a[i][j] != 1:
+                    a[i][j] = 1
+        a=a*255
+        image = Image.fromarray(a.astype('uint8'))
+        return image
+
+
+
+print('*********************************************************************************************')
+print()
+print('欢迎使用 PC刷课机 v9.0 ！')
+print('本刷课机仅供学习交流使用 ！')
+print('使用此刷课机代表您已知晓使用不当可能带来的一切后果！并愿意承担全部责任 ！')
+print()
+print('    使用须知：')
+print('      1. ！！！   请以管理员身份运行   ！！！')
+print('      2.开启刷课机前请先将课程添加至选课计划')
+print('      3.一次仅支持刷一门课程，请不要输入多门课程')
+print('      4.为了保证刷课成功，请确认课程名的全半角和空格输入正确')
+print('      5.如偶然崩溃请尝试重启，若多次重启还是不行那就卸载了吧')
+print()
+print('*********************************************************************************************')
+
+id=input('请输入您的学号: ')
+password=input('请输入您的密码: ')
+judge=input(' 未修习双学位请输入‘0’，\n 修习双学位进行主修刷课请输入‘1’，\n 修习双学位进行双学位刷课请输入‘2’:')
+
+wants=[]
+print('请输入您想选的课程名，输入‘over’结束输入（注意全半角和大小写）: ')
+c=input()
+while c != 'over':
+    wants.append(c)
+    c=input()
+
+page=input('请输入你想选的课在选课计划中的页数，若仅有1页请输入‘1’: ')
+gap=input('请输入刷新间隔（单位：s）（建议15s以上）: ')
+
+ele=web(id,password,wants,judge,page,gap)
+ele.login()
+ele.check()
